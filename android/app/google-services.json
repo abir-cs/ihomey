@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "480731842391",
+    "project_id": "ihomey-36b9d",
+    "storage_bucket": "ihomey-36b9d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480731842391:android:f58a112bf4d2e9d4692012",
+        "android_client_info": {
+          "package_name": "com.example.ihomey"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKNj-aEj8nHselhZWdPFt3HHq_Ahuz2GU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
