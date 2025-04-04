@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
 
   bool isOn = false;
   List <String> weather_icons =["Icons.cloud_queue_rounded"];
-  List <notification> notifs=[notification("First","blalblalbljab","9:00 AM"),notification("Second","blalblalbljab","9:00 AM")];
+  List <notification> notifs=[notification("First","blalblalblklmjab","9:00 AM"),notification("Second","blalblalbljab","9:00 AM")];
 
 
   Widget NotifCard(notification n){
