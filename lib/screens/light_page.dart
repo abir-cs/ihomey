@@ -1,9 +1,11 @@
-import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
+//import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
 
 import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:typed_data/src/typed_buffer.dart';
+import 'dart:typed_data';
+
 //import 'package:mqtt_client/mqtt_browser_client.dart';
 
 class Light extends StatefulWidget {
@@ -41,7 +43,7 @@ class _TempState extends State<Light> {
 
   void _initMqttClient() async {
     client = MqttServerClient.withPort('test.mosquitto.org', 'flutter_client', 1883);
-    client!.useWebSocket = true;
+    client.useWebSocket = true;
     client.onConnected = onConnected;
     client.onSubscribed = onSubscribed;
     await client.connect();
@@ -82,14 +84,14 @@ class _TempState extends State<Light> {
             timePickerTheme: TimePickerThemeData(
               dialHandColor:  Colors.blueGrey, // Color of the hand selector
               dialBackgroundColor:Color(0xFFF4F4F4), // Background of the dial
-              hourMinuteTextColor: MaterialStateColor.resolveWith((states) =>
-              states.contains(MaterialState.selected) ? Colors.white : Colors.black),
-              hourMinuteColor: MaterialStateColor.resolveWith((states) =>
-              states.contains(MaterialState.selected) ? Colors.blueGrey:Color(0xFFF4F4F4)!),
-              dayPeriodTextColor: MaterialStateColor.resolveWith((states) =>
-              states.contains(MaterialState.selected) ? Colors.white : Colors.black),
-              dayPeriodColor: MaterialStateColor.resolveWith((states) =>
-              states.contains(MaterialState.selected) ? Color(0xFFBCB5A8):Colors.white!),
+              hourMinuteTextColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? Colors.white : Colors.black),
+              hourMinuteColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? Colors.blueGrey:Color(0xFFF4F4F4)),
+              dayPeriodTextColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? Colors.white : Colors.black),
+              dayPeriodColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? Color(0xFFBCB5A8):Colors.white),
               entryModeIconColor:Color(0xFF091525), // Icon color
             ),
             colorScheme: ColorScheme.light(
@@ -120,14 +122,14 @@ class _TempState extends State<Light> {
             timePickerTheme: TimePickerThemeData(
               dialHandColor:  Colors.blueGrey, // Color of the hand selector
               dialBackgroundColor:Color(0xFFF4F4F4), // Background of the dial
-              hourMinuteTextColor: MaterialStateColor.resolveWith((states) =>
-              states.contains(MaterialState.selected) ? Colors.white : Colors.black),
-              hourMinuteColor: MaterialStateColor.resolveWith((states) =>
-              states.contains(MaterialState.selected) ? Colors.blueGrey:Color(0xFFF4F4F4)!),
-              dayPeriodTextColor: MaterialStateColor.resolveWith((states) =>
-              states.contains(MaterialState.selected) ? Colors.white : Colors.black),
-              dayPeriodColor: MaterialStateColor.resolveWith((states) =>
-              states.contains(MaterialState.selected) ? Color(0xFFBCB5A8):Colors.white!),
+              hourMinuteTextColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? Colors.white : Colors.black),
+              hourMinuteColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? Colors.blueGrey:Color(0xFFF4F4F4)),
+              dayPeriodTextColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? Colors.white : Colors.black),
+              dayPeriodColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? Color(0xFFBCB5A8):Colors.white),
               entryModeIconColor:Color(0xFF091525), // Icon color
             ),
             colorScheme: ColorScheme.light(
@@ -419,7 +421,7 @@ class _TempState extends State<Light> {
   }
   @override
   void dispose() {
-    client?.disconnect();
+    client.disconnect();
     super.dispose();
   }
 }

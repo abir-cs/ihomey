@@ -36,14 +36,14 @@ class _TempState extends State<Temp> {
             timePickerTheme: TimePickerThemeData(
               dialHandColor:  Colors.blueGrey, // Color of the hand selector
               dialBackgroundColor:Color(0xFFF4F4F4), // Background of the dial
-              hourMinuteTextColor: MaterialStateColor.resolveWith((states) =>
-              states.contains(MaterialState.selected) ? Colors.white : Colors.black),
-              hourMinuteColor: MaterialStateColor.resolveWith((states) =>
-              states.contains(MaterialState.selected) ? Colors.blueGrey:Color(0xFFF4F4F4)!),
-              dayPeriodTextColor: MaterialStateColor.resolveWith((states) =>
-              states.contains(MaterialState.selected) ? Colors.white : Colors.black),
-              dayPeriodColor: MaterialStateColor.resolveWith((states) =>
-              states.contains(MaterialState.selected) ? Color(0xFFBCB5A8):Colors.white!),
+              hourMinuteTextColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? Colors.white : Colors.black),
+              hourMinuteColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? Colors.blueGrey:Color(0xFFF4F4F4)),
+              dayPeriodTextColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? Colors.white : Colors.black),
+              dayPeriodColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? Color(0xFFBCB5A8):Colors.white),
               entryModeIconColor:Color(0xFF091525), // Icon color
             ),
             colorScheme: ColorScheme.light(
@@ -74,14 +74,14 @@ class _TempState extends State<Temp> {
             timePickerTheme: TimePickerThemeData(
               dialHandColor:  Colors.blueGrey, // Color of the hand selector
               dialBackgroundColor:Color(0xFFF4F4F4), // Background of the dial
-              hourMinuteTextColor: MaterialStateColor.resolveWith((states) =>
-              states.contains(MaterialState.selected) ? Colors.white : Colors.black),
-              hourMinuteColor: MaterialStateColor.resolveWith((states) =>
-              states.contains(MaterialState.selected) ? Colors.blueGrey:Color(0xFFF4F4F4)!),
-              dayPeriodTextColor: MaterialStateColor.resolveWith((states) =>
-              states.contains(MaterialState.selected) ? Colors.white : Colors.black),
-              dayPeriodColor: MaterialStateColor.resolveWith((states) =>
-              states.contains(MaterialState.selected) ? Color(0xFFBCB5A8):Colors.white!),
+              hourMinuteTextColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? Colors.white : Colors.black),
+              hourMinuteColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? Colors.blueGrey:Color(0xFFF4F4F4)),
+              dayPeriodTextColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? Colors.white : Colors.black),
+              dayPeriodColor: WidgetStateColor.resolveWith((states) =>
+              states.contains(WidgetState.selected) ? Color(0xFFBCB5A8):Colors.white),
               entryModeIconColor:Color(0xFF091525), // Icon color
             ),
             colorScheme: ColorScheme.light(

@@ -8,6 +8,8 @@ import 'package:mqtt_client/mqtt_client.dart';
 
 //import 'package:mqtt_client/mqtt_browser_client.dart';
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -101,14 +103,14 @@ class _HomePageState extends State<HomePage> {
              mainAxisAlignment: MainAxisAlignment.spaceBetween,
              children: [
                Text(
-                 '${n.title}',
+                 n.title,
                  style:TextStyle(
                    color: Color(0xFF19202A),
                    fontWeight: FontWeight.bold,
                  ),
                ),
                Text(
-                 '${n.time}',
+                 n.time,
                  style:TextStyle(
                    color: Color(0xFF606060),
                  ),
@@ -117,7 +119,7 @@ class _HomePageState extends State<HomePage> {
   
            ),
            Text(
-             '${n.disc}',
+             n.disc,
              style:TextStyle(
                color: Color(0xFF19202A),
              ),
@@ -248,7 +250,7 @@ class _HomePageState extends State<HomePage> {
                               color:  Color(0xFFBCBABA),
                               borderRadius: BorderRadius.circular(5),
                             ),
-                            child: Text('$formattedDate')
+                            child: Text(formattedDate)
                         ),
                         Text.rich(
                           TextSpan(
