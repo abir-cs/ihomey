@@ -1,6 +1,9 @@
+import 'dart:nativewrappers/_internal/vm/lib/typed_data_patch.dart';
+
 import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:typed_data/src/typed_buffer.dart';
 //import 'package:mqtt_client/mqtt_browser_client.dart';
 
 class Light extends StatefulWidget {
@@ -387,7 +390,25 @@ class _TempState extends State<Light> {
                         ),
                       ),
                     ],
-                  )
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      String topic = "light/schedule";
+                      String message = '{"from": "${selectedTime1.format(context)}", "to": "${selectedTime2.format(context)}"}';
+                      client.publishMessage(
+                        topic,
+                        MqttQos.atMostOnce,
+                        Uint8List.fromList(message.codeUnits) as Uint8Buffer,
+                      );
+                      print("Schedule sent: $message");
+                    },
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                    ),
+                    child: Text("Send Schedule"),
+                  ),
                 ],
               ),
             )
