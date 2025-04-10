@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:mqtt_client/mqtt_server_client.dart';
 import 'notifications.dart';
+import 'package:mqtt_client/mqtt_client.dart';
 
+//import 'package:mqtt_client/mqtt_browser_client.dart';
 class HomePage extends StatefulWidget {
   @override
   State<HomePage> createState() => _HomePageState();
@@ -15,6 +18,9 @@ class _HomePageState extends State<HomePage> {
   DateTime today= DateTime.now();
   String formattedDate='';
   double degree =0;
+  bool isOn = false;
+
+  MqttClient? client;
 
   //setting up today's weather and date 
   void gettemp()async{
@@ -29,11 +35,55 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     formattedDate = DateFormat("MMMdd, yyyy").format(today);
     gettemp();
+    connectToMQTT();
   }
 
-  bool isOn = false;
+
+
   List <String> weather_icons =["Icons.cloud_queue_rounded"];
   List <notification> notifs=[notification("First","blalblalblklmjab","9:00 AM"),notification("Second","blalblalbljab","9:00 AM")];
+
+
+
+  // Connect to the MQTT broker
+  Future<void> connectToMQTT() async {
+    client = MqttServerClient.withPort('test.mosquitto.org', 'flutter_client', 1883);
+    client!.useWebSocket = true;
+    client!.logging(on: true);
+    client!.onConnected = onConnected;
+    client!.onDisconnected = onDisconnected;
+
+    final connMessage = MqttConnectMessage()
+        .withClientIdentifier('flutter_client')
+        .withWillTopic('flutter/lastwill')
+        .withWillMessage('Disconnected')
+        .startClean();
+    client!.connectionMessage = connMessage;
+
+    try {
+      await client!.connect();
+      print ("connection succeful");
+    } catch (e) {
+      print('Error connecting to MQTT broker: $e');
+    }
+  }
+  // Once connected, subscribe to the topic
+  void onConnected() {
+    print('Connected to the MQTT broker');
+    client!.subscribe('light/control', MqttQos.atMostOnce);
+  }
+  // When disconnected
+  void onDisconnected() {
+    print('Disconnected from the MQTT broker');
+  }
+  // Send ON or OFF to the topic
+  void controlLED(String command) {
+    if (client != null && client!.connectionStatus!.state == MqttConnectionState.connected) {
+      final builder = MqttClientPayloadBuilder();
+      builder.addString(command); // Add ON or OFF message
+      client!.publishMessage('light/control', MqttQos.atMostOnce, builder.payload!);
+    }
+  }
 
 
   Widget NotifCard(notification n){
@@ -302,6 +352,8 @@ class _HomePageState extends State<HomePage> {
                               onTap: () {
                                 setState(() {
                                   isOn = !isOn;
+                                  // Toggle LED based on current status
+                                  controlLED(isOn ? "ON" : "OFF");
                                 });
                               },
                               child: AnimatedContainer(
@@ -578,4 +630,13 @@ class _HomePageState extends State<HomePage> {
       ) ,
     );
   }
+  @override
+  void dispose() {
+    client?.disconnect();
+    super.dispose();
+  }
+}
+
+extension on MqttClient {
+  set useWebSocket(bool useWebSocket) {}
 }

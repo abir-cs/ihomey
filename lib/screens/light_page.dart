@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
+//import 'package:mqtt_client/mqtt_browser_client.dart';
+
 class Light extends StatefulWidget {
   const Light({super.key});
 
@@ -8,14 +12,53 @@ class Light extends StatefulWidget {
 
 class _TempState extends State<Light> {
   double light_int = 0.6;
-
-  void _updateIntensity(DragUpdateDetails details, double maxHeight) {
+  late MqttClient client;
+  @override
+  void initState() {
+    super.initState();
+    _initMqttClient();
+  }
+  void _updateIntensity(DragUpdateDetails details, double containerHeight) {
     setState(() {
-      light_int -= details.primaryDelta! / maxHeight;
-      light_int = light_int.clamp(0.0, 1.0); // Keep value between 0-1
+      double dy = details.localPosition.dy;
+      double newValue = 1.0 - (dy / containerHeight);
+      light_int = newValue.clamp(0.0, 1.0);
     });
+    final opacityPercentage = (light_int * 100).toInt().toString();
+    final builder = MqttClientPayloadBuilder();
+    builder.addString(opacityPercentage);
+
+    client.publishMessage(
+      'light/opacity',
+      MqttQos.atLeastOnce,
+      builder.payload!,
+    );
   }
 
+
+  void _initMqttClient() async {
+    client = MqttServerClient.withPort('test.mosquitto.org', 'flutter_client', 1883);
+    client!.useWebSocket = true;
+    client.onConnected = onConnected;
+    client.onSubscribed = onSubscribed;
+    await client.connect();
+  }
+  // Callback when connected to MQTT broker
+  void onConnected() {
+    print('Connected to MQTT broker');
+  }
+
+  // Callback when subscription is successful
+  void onSubscribed(String topic) {
+    print('Subscribed to $topic');
+  }
+
+  // Send opacity value to MQTT broker
+  // void _publishOpacity(double opacity) {
+  //   final builder = MqttClientPayloadBuilder();
+  //   builder.addString(opacity.toString());  // Send opacity value as string
+  //   client.publishMessage('light/opacity', MqttQos.atLeastOnce, builder.payload);
+  // }
 
   bool isOn= false;
   bool lightOn=true;
@@ -353,4 +396,13 @@ class _TempState extends State<Light> {
       ),
     );
   }
+  @override
+  void dispose() {
+    client?.disconnect();
+    super.dispose();
+  }
+}
+
+extension on MqttClient {
+  set useWebSocket(bool useWebSocket) {}
 }
