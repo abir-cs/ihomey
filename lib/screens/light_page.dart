@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:typed_data/src/typed_buffer.dart';
 import 'dart:typed_data';
 
@@ -18,9 +19,21 @@ class Light extends StatefulWidget {
 class _TempState extends State<Light> {
   double light_int = 0.6;
   late MqttClient client;
+
+  Future<void> loadLight() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      light_int = prefs.getDouble("light") ?? 0.6;
+    });
+  }
+  Future<void> saveLight(double newLight) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('light', newLight);
+  }
   @override
   void initState() {
     super.initState();
+    loadLight();
     _initMqttClient();
   }
   void _updateIntensity(DragUpdateDetails details, double containerHeight) {
@@ -28,6 +41,7 @@ class _TempState extends State<Light> {
       double dy = details.localPosition.dy;
       double newValue = 1.0 - (dy / containerHeight);
       light_int = newValue.clamp(0.0, 1.0);
+      saveLight(light_int);
     });
     final opacityPercentage = (light_int * 100).toInt().toString();
     final builder = MqttClientPayloadBuilder();
