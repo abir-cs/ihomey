@@ -33,11 +33,12 @@ class _TempState extends State<Light> {
     final builder = MqttClientPayloadBuilder();
     builder.addString(opacityPercentage);
 
-    client.publishMessage(
-      'light/opacity',
-      MqttQos.atLeastOnce,
-      builder.payload!,
-    );
+    if (client.connectionStatus?.state == MqttConnectionState.connected) {
+      client.publishMessage('light/opacity', MqttQos.atLeastOnce, builder.payload!);
+    } else {
+      print("MQTT is not connected. Can't publish.");
+    }
+
   }
 
 
@@ -397,11 +398,15 @@ class _TempState extends State<Light> {
                     onPressed: () {
                       String topic = "light/schedule";
                       String message = '{"from": "${selectedTime1.format(context)}", "to": "${selectedTime2.format(context)}"}';
-                      client.publishMessage(
-                        topic,
-                        MqttQos.atMostOnce,
-                        Uint8List.fromList(message.codeUnits) as Uint8Buffer,
-                      );
+                      final builder = MqttClientPayloadBuilder();
+                      builder.addString(message);
+
+                      if (client.connectionStatus?.state == MqttConnectionState.connected) {
+                        client.publishMessage('light/schedule', MqttQos.atLeastOnce, builder.payload!);
+                      } else {
+                        print("MQTT is not connected. Can't publish.");
+                      }
+
                       print("Schedule sent: $message");
                     },
                     style: TextButton.styleFrom(
