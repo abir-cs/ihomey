@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Temp extends StatefulWidget {
   const Temp({super.key});
@@ -102,6 +103,45 @@ class _TempState extends State<Temp> {
     }
   }
 
+  Future<void> loadTempadj() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _temperature  = prefs.getDouble("tempadj") ?? 14; // default to "Abir" if no saved value
+    });
+  }
+  Future<void> saveTempadj(double newTemp) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setDouble('tempadj', newTemp);
+  }
+  Future<void> loadTemp() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      selectedTemp = prefs.getInt("temp") ?? 14; // default to "Abir" if no saved value
+    });
+  }
+  Future<void> saveTemp(int newTemp) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('temp', newTemp);
+  }
+  Future<void> loadStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      isOn = prefs.getBool("status") ?? false; // default to "Abir" if no saved value
+    });
+  }
+  Future<void> saveStatus(bool newStatus) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('status', newStatus);
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadTempadj();
+    loadTemp();
+    loadStatus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,6 +181,7 @@ class _TempState extends State<Temp> {
                   onChange: (value) {
                     setState(() {
                       _temperature = value;
+                      saveTempadj(_temperature );
                     });
                   },
                   innerWidget: (value) => Container(
@@ -253,6 +294,7 @@ class _TempState extends State<Temp> {
                 onTap: () {
                   setState(() {
                     isOn = !isOn;
+                    saveStatus(isOn);
                   });
                 },
                 child: AnimatedContainer(
