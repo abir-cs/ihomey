@@ -8,7 +8,8 @@ import 'package:mqtt_client/mqtt_client.dart';
 
 //import 'package:mqtt_client/mqtt_browser_client.dart';
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+   HomePage({super.key, required this.name});
+    String name;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -16,7 +17,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String url="https://api.open-meteo.com/v1/forecast?latitude=36.36&longitude=6.61&current_weather=true";
-  String name="chems";
   DateTime today= DateTime.now();
   String formattedDate='';
   double degree =0;
@@ -25,13 +25,17 @@ class _HomePageState extends State<HomePage> {
   MqttClient? client;
 
   //setting up today's weather and date 
-  void gettemp()async{
-    final response=await http.get(Uri.parse(url));
-    var data =jsonDecode(response.body);
-    setState(() {
-      degree=data["current_weather"]["temperature"];
-    });
-  }
+ void gettemp() async {
+  final response = await http.get(Uri.parse(url));
+  var data = jsonDecode(response.body);
+
+  if (!mounted) return; // 🚨 Prevent calling setState on a disposed widget
+
+  setState(() {
+    degree = data["current_weather"]["temperature"];
+  });
+}
+
   @override
   void initState() {
     super.initState();
@@ -193,7 +197,7 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      "Welcome Home $name !",
+                      "Welcome Home ${widget.name}!",
                       style: TextStyle(
                         letterSpacing: 1.5,
                         fontSize: 18,

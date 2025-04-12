@@ -25,7 +25,7 @@ class _SignInState extends State<SignIn> {
   if (username == correctUsername && password == correctPassword) {
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => MainScreen()),
+      MaterialPageRoute(builder: (context) => MainScreen(username: _usernameController.text)),
     );
   } else {
     ScaffoldMessenger.of(context).showSnackBar(

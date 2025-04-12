@@ -40,7 +40,8 @@ class MyApp extends StatelessWidget {
 }
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+    final String username;
+  const MainScreen({super.key, required this.username});
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -48,11 +49,19 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 1;
-  final List<Widget> _pages = [
-    DashboardPage(),
-    HomePage(),
-    SettingsPage(),
-  ];
+  late List<Widget> _pages;
+
+    @override
+  void initState() {
+    super.initState();
+    
+    // Initialize _pages in initState, where you can safely access widget.username
+    _pages = [
+      DashboardPage(),
+      HomePage(name: widget.username),  // Passing username correctly
+      SettingsPage(name: widget.username),
+    ];
+  }
 
   void _onItemTapped(int index) {
     setState(() {

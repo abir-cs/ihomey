@@ -1,40 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'sign_in_page.dart';
 
 
 
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({super.key});
+String name;
+SettingsPage({super.key, required this.name});
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  bool isOn = false;
+  String email = "username@gmail.com";
 
-bool isOn = false;
-String name="Abir";
-String email="username@gmail.com";
 
-Future<void> loadName() async {
-  final prefs = await SharedPreferences.getInstance();
-  setState(() {
-    name = prefs.getString('name') ?? "Abir"; // default to "Abir" if no saved value
-  });
-}
 
 Future<void> saveName(String newName) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString('name', newName);
 }
 
-@override
-void initState() {
-  super.initState();
-  loadName(); // load saved name
-}
-
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,54 +38,54 @@ void initState() {
         title: Text(
           "Profile/Settings",
           style: TextStyle(fontWeight: FontWeight.bold),
-          ),
+        ),
         centerTitle: true,
       ),
       body: SafeArea(
         child: Column(
-          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Container(
               margin: EdgeInsets.fromLTRB(15, 10, 20, 30),
-              width: 335, height: 196,
+              width: 335,
+              height: 196,
               decoration: BoxDecoration(
-                  color:  Color(0xFFF4F4F4),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      spreadRadius: 2,
-                      blurRadius: 6,
-                      offset: Offset(2, 4),
-                    ),
-                  ],
-                ),
-              child: Row(
-                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  SizedBox(width: 30,),
-                  CircleAvatar(
-                      backgroundImage: AssetImage("assets/pic6.png"),
-                      radius: 37,
-                    ),
-                    SizedBox(width: 20),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center, // Center text properly
-                      children: [
-                        Text(
-                          name, 
-                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(height: 5), // Space between name & email
-                        Text(
-                          email, 
-                          style: TextStyle(fontSize: 12, color: Color(0xFF6B6464)),
-                        ),
-                      ],
-                    ),
+                color: Color(0xFFF4F4F4),
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    spreadRadius: 2,
+                    blurRadius: 6,
+                    offset: Offset(2, 4),
+                  ),
                 ],
-              )
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(width: 30),
+                  CircleAvatar(
+                    backgroundImage: AssetImage("assets/pic6.png"),
+                    radius: 37,
+                  ),
+                  SizedBox(width: 20),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "${widget.name}", // Use the local 'name' variable here
+                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        email,
+                        style: TextStyle(fontSize: 12, color: Color(0xFF6B6464)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
 
 
@@ -103,8 +96,8 @@ void initState() {
               width: 300,
               
               child: ElevatedButton(
-onPressed: () async {
-  TextEditingController controller = TextEditingController(text: name);
+onPressed: () async  {
+  TextEditingController controller = TextEditingController(text: widget.name); // Use the state 'name'
 
   // Wait for the current frame to finish rendering (keyboard delay trick)
   await Future.delayed(Duration.zero);
@@ -151,9 +144,9 @@ onPressed: () async {
                 ElevatedButton(
                   onPressed: () {
                     setState(() {
-                      name = controller.text;
+                      widget.name = controller.text;  // Update state variable 'name'
                     });
-                    saveName(name);
+                    saveName(widget.name);  // Save updated name to SharedPreferences
                     Navigator.pop(context);
                   },
                   child: Text('Save'),
@@ -370,7 +363,10 @@ onPressed: () async {
              Center(
               child: ElevatedButton(
               onPressed: () {
-                
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignIn()),
+                );
               },
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(Color(0xFF1B2635)),
