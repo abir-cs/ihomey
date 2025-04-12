@@ -1,0 +1,8 @@
+{
+  "OutputFoldersPerTargetSystem": {
+    "Local Machine": [
+      "build\\windows\\x64\\extracted\\firebase_cpp_sdk_windows\\out\\build\\x64-Debug",
+      "build\\windows\\x64\\extracted\\firebase_cpp_sdk_windows\\out\\install\\x64-Debug"
+    ]
+  }
+}

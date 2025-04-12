@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'login_page.dart';
+import 'sign_in_page.dart';
 
 class IntroPage extends StatelessWidget {
   const IntroPage({super.key});
@@ -48,7 +48,7 @@ class IntroPage extends StatelessWidget {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  MaterialPageRoute(builder: (context) => SignIn()),
                 );
               },
               style: ElevatedButton.styleFrom(

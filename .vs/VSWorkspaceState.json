@@ -1,0 +1,10 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\build\\windows",
+    "\\build\\windows\\x64",
+    "\\build\\windows\\x64\\plugins",
+    "\\build\\windows\\x64\\plugins\\cloud_firestore"
+  ],
+  "PreviewInSolutionExplorer": false
+}
