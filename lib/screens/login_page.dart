@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'login_page.dart';
+import '../main.dart';
 
-class IntroPage extends StatelessWidget {
-  const IntroPage({super.key});
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class IntroPage extends StatelessWidget {
             Container(
               margin: EdgeInsets.fromLTRB(30,30,10,20),
               child: Text(
-                "Get comfy ! \nCustomizable Smart Home System",
+                "laaalalalalalal",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   letterSpacing: 2,
@@ -36,7 +36,7 @@ class IntroPage extends StatelessWidget {
             Container(
               margin: EdgeInsets.fromLTRB(30, 0, 20, 50),
               child: Text(
-                "Explore your dream house with an advanced control system",
+                "alalalala",
                 style: TextStyle(
                   letterSpacing: 2,
                   fontSize:15 ,
@@ -48,7 +48,7 @@ class IntroPage extends StatelessWidget {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => LoginPage()),
+                  MaterialPageRoute(builder: (context) => MainScreen()),
                 );
               },
               style: ElevatedButton.styleFrom(
