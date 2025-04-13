@@ -16,7 +16,7 @@ class IntroPage extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(20), // Adjust the radius as needed
               child: Image.asset(
-                "assets/I-HOMEY (5).png",
+                "assets/I-HOMEY (4).png",
                 width: 300,
                 fit: BoxFit.cover, // Ensures the image fills the space properly
               ),
@@ -52,7 +52,7 @@ class IntroPage extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFFA9ADB6), // Change this to your preferred color
+                backgroundColor: Color(0xFF19202A), // Change this to your preferred color
               ),
               child: Icon(
                 Icons.double_arrow_rounded,

@@ -41,15 +41,13 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     formattedDate = DateFormat("MMMdd, yyyy").format(today);
     gettemp();
+
+    //connecting to mqtt once the user enter the home page
     connectToMQTT();
   }
 
-
-
   List <String> weather_icons =["Icons.cloud_queue_rounded"];
   List <notification> notifs=[notification("First","blalblalblklmjab","9:00 AM"),notification("Second","blalblalbljab","9:00 AM")];
-
-
 
   // Connect to the MQTT broker
   Future<void> connectToMQTT() async {
@@ -65,7 +63,6 @@ class _HomePageState extends State<HomePage> {
         .withWillMessage('Disconnected')
         .startClean();
     client!.connectionMessage = connMessage;
-
     try {
       await client!.connect();
       print ("connection succeful");

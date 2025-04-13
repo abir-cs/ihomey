@@ -102,7 +102,7 @@ class _SignInState extends State<SignIn> {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.asset(
-                    "assets/I-HOMEY (5).png",
+                    "assets/I-HOMEY (4).png",
                     width: 300,
                     fit: BoxFit.cover,
                   ),
