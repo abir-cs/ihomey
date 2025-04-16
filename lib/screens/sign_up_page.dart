@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ihomey/screens/authentication.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -11,6 +12,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passkeyController = TextEditingController();
+  final authservice = AuthService();
 
   String _savedUsername = '';
 
@@ -112,17 +114,39 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 // Passkey field
                 _buildInputField(
-                  label: "iHomeY passkey passcode idk bro",
-                  hint: "Enter your passkey",
+                  label: "Email",
+                  hint: "Enter your email",
                   controller: _passkeyController,
-                  obscureText: true,
+                  //obscureText: true,
                 ),
                 const SizedBox(height: 30),
 
                 // Navigation button
                 ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context); // Go back to Sign In page
+                  onPressed: () async{
+                    String username = _usernameController.text.trim();
+                    String email = _passkeyController.text.trim();
+                    String password = _passwordController.text.trim();
+                    //Call createAccount function
+                    final error = await authservice.createAccount(
+                    username: username,
+                    email: email,
+                    password: password,
+                    );
+
+                    if (error != null) {
+                    // Show error message if sign-up failed
+                    //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Username is already taken'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    } else {
+                    // Navigate back to Sign In page after successful account creation
+                    Navigator.pop(context);
+                    }
                   },
                   style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(Color(0xFF1B2635)),

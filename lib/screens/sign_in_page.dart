@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ihomey/screens/authentication.dart';
 import '../main.dart';
 import 'sign_up_page.dart';
 
@@ -14,6 +15,7 @@ class _SignInState extends State<SignIn> {
   final TextEditingController _passwordController = TextEditingController();
   final String correctUsername = 'abir';
   final String correctPassword = '24022005';
+  final authservice= AuthService();
 
 
   String _savedUsername = '';
@@ -139,7 +141,29 @@ class _SignInState extends State<SignIn> {
 
                 // Navigation button
                 ElevatedButton(
-                  onPressed: _login,
+                  onPressed: () async {
+                    final result = await authservice.loginWithUsernameAndPassword(
+                      username: _usernameController.text.trim(),
+                      password: _passwordController.text,
+                    );
+
+                    if (result == null) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => MainScreen(username: _usernameController.text)),
+                      );
+                      print('Login successful');
+                    } else {
+                      // Login failed – show SnackBar with the error message
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Invalid username or password'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      print('Error: $result');
+                    }
+                  },
                   style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(Color(0xFF1B2635)),
                   foregroundColor: WidgetStateProperty.all(Color(0xFFF4F4F4)),

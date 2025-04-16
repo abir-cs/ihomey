@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'screens/home_page.dart';
 import 'screens/dashboard_page.dart';
@@ -8,7 +9,7 @@ import 'screens/intro_page.dart';
 import 'screens/temperature_page.dart';
 import 'screens/light_page.dart';
 
-void main() {
+void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor: Colors.transparent, // Make background transparent
@@ -17,6 +18,7 @@ void main() {
 
   ));
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  await Firebase.initializeApp();
   runApp( MyApp());
 }
 
