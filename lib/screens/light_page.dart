@@ -58,10 +58,27 @@ class _TempState extends State<Light> {
 
   void _initMqttClient() async {
     client = MqttServerClient.withPort('test.mosquitto.org', 'flutter_client', 1883);
-    client.useWebSocket = true;
+    client.useWebSocket = true; // If supported
+    client.websocketProtocols = MqttClientConstants.protocolsSingleDefault;
+
+    client.logging(on: true); // Debug print
+    client.keepAlivePeriod = 20;
+    client.onDisconnected = onDisconnected;
     client.onConnected = onConnected;
     client.onSubscribed = onSubscribed;
-    await client.connect();
+
+    final connMess = MqttConnectMessage()
+        .withClientIdentifier('flutter_client')
+        .startClean()
+        .withWillQos(MqttQos.atLeastOnce);
+    client.connectionMessage = connMess;
+
+    try {
+      await client.connect();
+    } catch (e) {
+      print('❌ MQTT connection failed: $e');
+      client.disconnect();
+    }
   }
   // Callback when connected to MQTT broker
   void onConnected() {
@@ -72,7 +89,9 @@ class _TempState extends State<Light> {
   void onSubscribed(String topic) {
     print('Subscribed to $topic');
   }
-
+  void onDisconnected() {
+    print('Disconnected from the MQTT broker');
+  }
   // Send opacity value to MQTT broker
   // void _publishOpacity(double opacity) {
   //   final builder = MqttClientPayloadBuilder();
@@ -412,6 +431,7 @@ class _TempState extends State<Light> {
                     onPressed: () {
                       String topic = "light/schedule";
                       String message = '{"from": "${selectedTime1.format(context)}", "to": "${selectedTime2.format(context)}"}';
+
                       final builder = MqttClientPayloadBuilder();
                       builder.addString(message);
 
@@ -420,7 +440,6 @@ class _TempState extends State<Light> {
                       } else {
                         print("MQTT is not connected. Can't publish.");
                       }
-
                       print("Schedule sent: $message");
                     },
                     style: TextButton.styleFrom(

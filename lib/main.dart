@@ -54,32 +54,29 @@ class _MainScreenState extends State<MainScreen> {
     @override
   void initState() {
     super.initState();
-    
-    // Initialize _pages in initState, where you can safely access widget.username
+    // Initialize _pages in initState
     _pages = [
       DashboardPage(),
       HomePage(name: widget.username),  // Passing username correctly
       SettingsPage(name: widget.username),
     ];
   }
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         elevation: 20,
-        type: BottomNavigationBarType.fixed, // Ensures the background color works
-        backgroundColor:Colors.white, //Color(0xFFF4F2F0), // Your preferred background color
+        type: BottomNavigationBarType.fixed, //background color
+        backgroundColor:Colors.white,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Color(0xFF1A1F25), // Orange for selected item
+        selectedItemColor: Color(0xFF1A1F25),
         unselectedItemColor: Colors.grey[700], // Lighter grey for unselected labels
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Stats'),

@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   MqttClient? client;
 
   //setting up today's weather and date 
- void gettemp() async {
+  void gettemp() async {
   final response = await http.get(Uri.parse(url));
   var data = jsonDecode(response.body);
 
@@ -35,13 +35,11 @@ class _HomePageState extends State<HomePage> {
     degree = data["current_weather"]["temperature"];
   });
 }
-
   @override
   void initState() {
     super.initState();
     formattedDate = DateFormat("MMMdd, yyyy").format(today);
     gettemp();
-
     //connecting to mqtt once the user enter the home page
     connectToMQTT();
   }
@@ -87,8 +85,6 @@ class _HomePageState extends State<HomePage> {
       client!.publishMessage('light/control', MqttQos.atMostOnce, builder.payload!);
     }
   }
-
-
   Widget NotifCard(notification n){
     return Container(
       padding: EdgeInsets.all(10),
@@ -177,8 +173,6 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -187,6 +181,7 @@ class _HomePageState extends State<HomePage> {
       body:SafeArea(
           child: Column(
             children: [
+              //welcome home user + notification bell + pfp
               Container(
                 margin: EdgeInsets.fromLTRB(20, 10, 20, 30),
 
@@ -289,7 +284,7 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  //light
+                  //light on/off
                   Container(
                     margin: EdgeInsets.fromLTRB(0, 44, 0, 0),
                     width: 162,height: 195, // Adjust as needed
@@ -338,7 +333,7 @@ class _HomePageState extends State<HomePage> {
                         Spacer(),
 
                         // Bottom Row: "On" Text + Switch
-                        Row(
+                        Row (
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
@@ -394,12 +389,11 @@ class _HomePageState extends State<HomePage> {
                      ),
                   ),
                   Column(
-
                     children: [
                       //advanced
                       GestureDetector(
                         onTap: (){
-                          print("advanced");
+                          //navigate to light settings page
                           Navigator.pushNamed(context, '/light');
                         },
                         child: Container(
@@ -509,9 +503,9 @@ class _HomePageState extends State<HomePage> {
                       )
                     ],
                   )
-
                 ],
               ),
+              //temperature + humidity
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
