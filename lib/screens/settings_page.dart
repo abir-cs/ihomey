@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'sign_in_page.dart';
 
-
-
-
 class SettingsPage extends StatefulWidget {
 String name;
 SettingsPage({super.key, required this.name});
@@ -16,9 +13,6 @@ SettingsPage({super.key, required this.name});
 class _SettingsPageState extends State<SettingsPage> {
   bool isOn = false;
   String email = "username@gmail.com";
-
-
-
 Future<void> saveName(String newName) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString('name', newName);
@@ -44,6 +38,7 @@ Future<void> saveName(String newName) async {
       body: SafeArea(
         child: Column(
           children: [
+            //pfp + username + email
             Container(
               margin: EdgeInsets.fromLTRB(15, 10, 20, 30),
               width: 335,
@@ -87,11 +82,8 @@ Future<void> saveName(String newName) async {
                 ],
               ),
             ),
-
-
             SizedBox(height: 30),
-
-
+            //change username button
             SizedBox(
               width: 300,
               
@@ -191,12 +183,9 @@ onPressed: () async  {
               )
               )
             ),
-
-
             SizedBox(height: 35),
-
-
-             SizedBox(
+            //change email button
+            SizedBox(
               width: 300,
               child: ElevatedButton(
               onPressed: () {},
@@ -231,11 +220,8 @@ onPressed: () async  {
 
               )
             ),
-
-
             SizedBox(height: 35),
-
-
+            //change language button
             SizedBox(
               width: 300,
               child: ElevatedButton(
@@ -270,11 +256,8 @@ onPressed: () async  {
               
               ),
             ),
-
-
             SizedBox(height: 35),
-
-
+            //change mode button
             SizedBox(
               width: 300,
               child: ElevatedButton(
@@ -352,17 +335,13 @@ onPressed: () async  {
                         ),
               ),
             ),
-
-
-            
-
-
             SizedBox(height: 35),
-
-
+             //log out button
              Center(
               child: ElevatedButton(
               onPressed: () {
+                //navigate to sign in page
+
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => SignIn()),
