@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'notifications.dart';
 import 'package:mqtt_client/mqtt_client.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 //import 'package:mqtt_client/mqtt_browser_client.dart';
 class HomePage extends StatefulWidget {
@@ -42,10 +43,22 @@ class _HomePageState extends State<HomePage> {
     gettemp();
     //connecting to mqtt once the user enter the home page
     connectToMQTT();
+    FirebaseFirestore.instance
+        .collection('notifications')
+        .orderBy('timestamp', descending: true)
+        .snapshots()
+        .listen((QuerySnapshot snapshot) {
+      setState(() {
+        notifs = snapshot.docs
+            .map((doc) => notification.fromFirestore(doc.data() as Map<String, dynamic>))
+            .toList();
+      });
+    });
   }
 
   List <String> weather_icons =["Icons.cloud_queue_rounded"];
-  List <notification> notifs=[notification("First","blalblalblklmjab","9:00 AM"),notification("Second","blalblalbljab","9:00 AM")];
+  List <notification> notifs=[];
+
 
   // Connect to the MQTT broker
   Future<void> connectToMQTT() async {
@@ -107,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                  ),
                ),
                Text(
-                 n.time,
+                 n.timestamp,
                  style:TextStyle(
                    color: Color(0xFF606060),
                  ),
