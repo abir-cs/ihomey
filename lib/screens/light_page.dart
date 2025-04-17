@@ -200,6 +200,7 @@ class _TempState extends State<Light> {
           children: [
             Column(
               children: [
+                //draggable pile for selecting light intensity
                 GestureDetector(
                   onVerticalDragUpdate: (details) => _updateIntensity(details, containerHeight),
                   child: Stack(
@@ -248,6 +249,8 @@ class _TempState extends State<Light> {
                 ),
               ],
             ),
+
+            //schedule details
             Container(
               height: 300,
               margin: EdgeInsets.fromLTRB(20, 0, 20, 0),

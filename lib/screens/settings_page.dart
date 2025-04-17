@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ihomey/screens/updateemail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ihomey/screens/authentication.dart';
 import 'sign_in_page.dart';
 
-class SettingsPage extends StatefulWidget {
-  String name;
-  SettingsPage({super.key, required this.name});
 
+
+
+class SettingsPage extends StatefulWidget {
+String name;
+SettingsPage({super.key, required this.name});
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -16,13 +15,14 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool isOn = false;
-  String email = FirebaseAuth.instance.currentUser!.email!;
-  final authservice = AuthService();
+  String email = "username@gmail.com";
 
-  Future<void> saveName(String newName) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('name', newName);
-  }
+
+
+Future<void> saveName(String newName) async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.setString('name', newName);
+}
 
   @override
   void initState() {
@@ -75,18 +75,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     children: [
                       Text(
                         "${widget.name}", // Use the local 'name' variable here
-                        style: TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 5),
                       Text(
                         email,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Color(0xFF6B6464),
-                        ),
+                        style: TextStyle(fontSize: 12, color: Color(0xFF6B6464)),
                       ),
                     ],
                   ),
@@ -94,197 +88,192 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
 
+
             SizedBox(height: 30),
 
+
             SizedBox(
               width: 300,
-
+              
               child: ElevatedButton(
-                onPressed: () async {
-                  TextEditingController controller = TextEditingController(
-                    text: widget.name,
-                  ); // Use the state 'name'
+onPressed: () async  {
+  TextEditingController controller = TextEditingController(text: widget.name); // Use the state 'name'
 
-                  // Wait for the current frame to finish rendering (keyboard delay trick)
-                  await Future.delayed(Duration.zero);
+  // Wait for the current frame to finish rendering (keyboard delay trick)
+  await Future.delayed(Duration.zero);
 
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(20),
-                      ),
-                    ),
-                    builder: (context) {
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          left: 20,
-                          right: 20,
-                          top: 20,
-                          bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'Edit Username',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 20),
-                            TextField(
-                              controller: controller,
-                              autofocus: true,
-                              decoration: InputDecoration(
-                                labelText: 'New username',
-                                border: OutlineInputBorder(),
-                              ),
-                            ),
-                            SizedBox(height: 20),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text('Cancel'),
-                                ),
-                                ElevatedButton(
-                                  onPressed: () async{
-                                    setState(() {
-                                      widget.name =
-                                          controller
-                                              .text; // Update state variable 'name'
-                                    });
-                                    saveName(
-                                      widget.name,
-                                    ); // Save updated name to SharedPreferences
-                                    //come herrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrreeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-                                    await authservice.updateUsername(controller.text);
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text('Save'),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
-
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Color(0xFFF4F4F4)),
-                  foregroundColor: WidgetStateProperty.all(Color(0xFF1B2635)),
-                  elevation: WidgetStateProperty.all(8),
-                  shadowColor: WidgetStateProperty.all(
-                    Colors.black.withOpacity(0.5),
-                  ),
-                  overlayColor: WidgetStateProperty.resolveWith<Color?>((
-                    Set<WidgetState> states,
-                  ) {
-                    if (states.contains(WidgetState.pressed)) {
-                      return Color.fromARGB(
-                        255,
-                        31,
-                        51,
-                        80,
-                      ).withOpacity(0.3); // Change ripple effect color
-                    }
-                    return null; // Default ripple color
-                  }),
-                  minimumSize: WidgetStateProperty.all(Size(300, 50)),
-                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        15,
-                      ), // Reduce roundness
-                    ),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.create_outlined,
-                      size: 20,
-                      color: Color(0xFF19202A),
-                    ),
-                    Text('  Change Username'),
-                  ],
-                ),
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.white,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) {
+      return Padding(
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 20,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Edit Username',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              controller: controller,
+              autofocus: true,
+              decoration: InputDecoration(
+                labelText: 'New username',
+                border: OutlineInputBorder(),
               ),
             ),
-
-            SizedBox(height: 35),
-
-            SizedBox(
-              width: 300,
-              child: ElevatedButton(
-                onPressed: () async {
-                  /*
-                  final newEmail = await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => UpdateEmailPage(currentEmail: email),
-                    ),
-                  );
-
-                  if (newEmail != null && newEmail is String) {
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
                     setState(() {
-                      email = newEmail; // Update the email in the current state
+                      widget.name = controller.text;  // Update state variable 'name'
                     });
-                  }
-                   */
-                },
+                    saveName(widget.name);  // Save updated name to SharedPreferences
+                    Navigator.pop(context);
+                  },
+                  child: Text('Save'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    },
+  );
+},
+
+
+
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(Color(0xFFF4F4F4)),
                   foregroundColor: WidgetStateProperty.all(Color(0xFF1B2635)),
                   elevation: WidgetStateProperty.all(8),
-                  shadowColor: WidgetStateProperty.all(
-                    Colors.black.withOpacity(0.5),
-                  ),
-                  overlayColor: WidgetStateProperty.resolveWith<Color?>((
-                    Set<WidgetState> states,
-                  ) {
-                    if (states.contains(WidgetState.pressed)) {
-                      return Color.fromARGB(
-                        255,
-                        31,
-                        51,
-                        80,
-                      ).withOpacity(0.3); // Change ripple effect color
-                    }
-                    return null; // Default ripple color
-                  }),
+                  shadowColor: WidgetStateProperty.all(Colors.black.withOpacity(0.5)), 
+                      overlayColor: WidgetStateProperty.resolveWith<Color?>(
+                        (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.pressed)) {
+                            return Color.fromARGB(255, 31, 51, 80).withOpacity(0.3); // Change ripple effect color
+                          }
+                          return null; // Default ripple color
+                        },
+                      ),
                   minimumSize: WidgetStateProperty.all(Size(300, 50)),
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        15,
-                      ), // Reduce roundness
+                      borderRadius: BorderRadius.circular(15), // Reduce roundness
                     ),
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.create_outlined,
-                      size: 20,
-                      color: Color(0xFF19202A),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.create_outlined, size: 20, color: Color(0xFF19202A)),
+                  Text('  Change Username'),
+                ],
+              )
+              )
+            ),
+
+
+            SizedBox(height: 35),
+
+
+             SizedBox(
+              width: 300,
+              child: ElevatedButton(
+              onPressed: () {},
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Color(0xFFF4F4F4)),
+                  foregroundColor: WidgetStateProperty.all(Color(0xFF1B2635)),
+                  elevation: WidgetStateProperty.all(8),
+                  shadowColor: WidgetStateProperty.all(Colors.black.withOpacity(0.5)), 
+                      overlayColor: WidgetStateProperty.resolveWith<Color?>(
+                        (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.pressed)) {
+                            return Color.fromARGB(255, 31, 51, 80).withOpacity(0.3); // Change ripple effect color
+                          }
+                          return null; // Default ripple color
+                        },
+                      ),
+                  minimumSize: WidgetStateProperty.all(Size(300, 50)),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15), // Reduce roundness
                     ),
-                    Text('  Change Email Address'),
-                  ],
+                  ),
                 ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.create_outlined, size: 20, color: Color(0xFF19202A)),
+                  Text('  Change Email Address'),
+                ],
+              )
+              
+
+              )
+            ),
+
+
+            SizedBox(height: 35),
+
+
+            SizedBox(
+              width: 300,
+              child: ElevatedButton(
+              onPressed: () {},
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(Color(0xFFF4F4F4)),
+                  foregroundColor: WidgetStateProperty.all(Color(0xFF1B2635)),
+                  elevation: WidgetStateProperty.all(8),
+                  shadowColor: WidgetStateProperty.all(Colors.black.withOpacity(0.5)), 
+                      overlayColor: WidgetStateProperty.resolveWith<Color?>(
+                        (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.pressed)) {
+                            return Color.fromARGB(255, 31, 51, 80).withOpacity(0.3); // Change ripple effect color
+                          }
+                          return null; // Default ripple color
+                        },
+                      ),
+                  minimumSize: WidgetStateProperty.all(Size(300, 50)),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15), // Reduce roundness
+                    ),
+                  ),
+                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.create_outlined, size: 20, color: Color(0xFF19202A)),
+                  Text('  Language'),
+                ],
+              ),
+              
               ),
             ),
 
+
             SizedBox(height: 35),
+
 
             SizedBox(
               width: 300,
@@ -294,85 +283,27 @@ class _SettingsPageState extends State<SettingsPage> {
                   backgroundColor: WidgetStateProperty.all(Color(0xFFF4F4F4)),
                   foregroundColor: WidgetStateProperty.all(Color(0xFF1B2635)),
                   elevation: WidgetStateProperty.all(8),
-                  shadowColor: WidgetStateProperty.all(
-                    Colors.black.withOpacity(0.5),
-                  ),
-                  overlayColor: WidgetStateProperty.resolveWith<Color?>((
-                    Set<WidgetState> states,
-                  ) {
-                    if (states.contains(WidgetState.pressed)) {
-                      return Color.fromARGB(
-                        255,
-                        31,
-                        51,
-                        80,
-                      ).withOpacity(0.3); // Change ripple effect color
-                    }
-                    return null; // Default ripple color
-                  }),
+                  shadowColor: WidgetStateProperty.all(Colors.black.withOpacity(0.5)), 
+                      overlayColor: WidgetStateProperty.resolveWith<Color?>(
+                        (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.pressed)) {
+                            return Color.fromARGB(255, 31, 51, 80).withOpacity(0.3); // Change ripple effect color
+                          }
+                          return null; // Default ripple color
+                        },
+                      ),
                   minimumSize: WidgetStateProperty.all(Size(300, 50)),
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        15,
-                      ), // Reduce roundness
+                      borderRadius: BorderRadius.circular(15), // Reduce roundness
                     ),
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.create_outlined,
-                      size: 20,
-                      color: Color(0xFF19202A),
-                    ),
-                    Text('  Language'),
-                  ],
-                ),
-              ),
-            ),
-
-            SizedBox(height: 35),
-
-            SizedBox(
-              width: 300,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Color(0xFFF4F4F4)),
-                  foregroundColor: WidgetStateProperty.all(Color(0xFF1B2635)),
-                  elevation: WidgetStateProperty.all(8),
-                  shadowColor: WidgetStateProperty.all(
-                    Colors.black.withOpacity(0.5),
-                  ),
-                  overlayColor: WidgetStateProperty.resolveWith<Color?>((
-                    Set<WidgetState> states,
-                  ) {
-                    if (states.contains(WidgetState.pressed)) {
-                      return Color.fromARGB(
-                        255,
-                        31,
-                        51,
-                        80,
-                      ).withOpacity(0.3); // Change ripple effect color
-                    }
-                    return null; // Default ripple color
-                  }),
-                  minimumSize: WidgetStateProperty.all(Size(300, 50)),
-                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        15,
-                      ), // Reduce roundness
-                    ),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text('Dark Mode         '),
-                    /*Text(
+              child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Dark Mode         '),
+                            /*Text(
                               isOn ? "On" : "Off",
                               style: TextStyle(
                                 fontSize: 16,
@@ -381,91 +312,89 @@ class _SettingsPageState extends State<SettingsPage> {
                               ),
                             ),*/
 
-                    // Custom Styled Switch
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          isOn = !isOn;
-                        });
-                      },
-                      child: AnimatedContainer(
-                        duration: Duration(milliseconds: 300),
-                        width: 50,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: isOn ? Colors.white : Color(0xFF19202A),
-                          border: Border.all(color: Colors.white, width: 2),
-                        ),
-                        child: Stack(
-                          children: [
-                            AnimatedPositioned(
-                              duration: Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                              left: isOn ? 22 : 2,
-                              top: 2,
-                              child: Container(
-                                width: 24,
-                                height: 24,
+                            // Custom Styled Switch
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isOn = !isOn;
+                                });
+                              },
+                              child: AnimatedContainer(
+                                duration: Duration(milliseconds: 300),
+                                width: 50,
+                                height: 32,
                                 decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color:
-                                      isOn ? Color(0xFF19202A) : Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: isOn ? Colors.white : Color(0xFF19202A),
+                                  border: Border.all(color: Colors.white, width: 2),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    AnimatedPositioned(
+                                      duration: Duration(milliseconds: 300),
+                                      curve: Curves.easeInOut,
+                                      left: isOn ? 22 : 2,
+                                      top: 2,
+                                      child: Container(
+                                        width: 24,
+                                        height: 24,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: isOn ? Color(0xFF19202A) : Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    ),
-                  ],
-                ),
               ),
             ),
 
+
+            
+
+
             SizedBox(height: 35),
-            Center(
+
+
+             Center(
               child: ElevatedButton(
-                onPressed: () async {
-                  await authservice.singOut();
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignIn()),
-                  );
-                },
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignIn()),
+                );
+              },
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(Color(0xFF1B2635)),
                   foregroundColor: WidgetStateProperty.all(Color(0xFFF4F4F4)),
                   elevation: WidgetStateProperty.all(8),
-                  shadowColor: WidgetStateProperty.all(
-                    Colors.black.withOpacity(0.5),
-                  ),
-                  overlayColor: WidgetStateProperty.resolveWith<Color?>((
-                    Set<WidgetState> states,
-                  ) {
-                    if (states.contains(WidgetState.pressed)) {
-                      return Color(
-                        0xFFF4F4F4,
-                      ).withOpacity(0.3); // Change ripple effect color
-                    }
-                    return null; // Default ripple color
-                  }),
+                  shadowColor: WidgetStateProperty.all(Colors.black.withOpacity(0.5)), 
+                      overlayColor: WidgetStateProperty.resolveWith<Color?>(
+                        (Set<WidgetState> states) {
+                          if (states.contains(WidgetState.pressed)) {
+                            return Color(0xFFF4F4F4).withOpacity(0.3); // Change ripple effect color
+                          }
+                          return null; // Default ripple color
+                        },
+                      ),
                   minimumSize: WidgetStateProperty.all(Size(100, 50)),
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(
-                        15,
-                      ), // Reduce roundness
+                      borderRadius: BorderRadius.circular(15), // Reduce roundness
                     ),
                   ),
                 ),
-                child: Text('Log out'),
-              ),
+              child: Text('Log out')
+              )
             ),
+            
           ],
-        ),
-      ),
+        )
+      )
     );
   }
 }
-
