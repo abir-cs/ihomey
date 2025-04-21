@@ -9,6 +9,10 @@ import 'screens/intro_page.dart';
 import 'screens/temperature_page.dart';
 import 'screens/light_page.dart';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -18,6 +22,18 @@ void main() async{
 
   ));
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
+  const bool useEmulators = false; // <- Set to false to use real Firebase
+
+  if (useEmulators) {
+    print("Using Firebase emulators...");
+    FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
+    FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
+    //FirebaseStorage.instance.useEmulator('localhost', 9199);
+  } else {
+    print("Using live Firebase backend.");
+  }
+
   await Firebase.initializeApp();
   runApp( MyApp());
 }
