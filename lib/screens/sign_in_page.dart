@@ -142,7 +142,7 @@ class _SignInState extends State<SignIn> {
                 // Navigation button
                 ElevatedButton(
                   onPressed: () async {
-                    final result = await authservice.loginWithUsernameAndPassword(
+                    final result = await authservice.login(
                       username: _usernameController.text.trim(),
                       password: _passwordController.text,
                     );

@@ -45,6 +45,7 @@ class _HomePageState extends State<HomePage> {
     gettemp();
     //connecting to mqtt once the user enter the home page
     connectToMQTT();
+    //updates notification in realtime from firebase
     FirebaseFirestore.instance
         .collection('notifications')
         .orderBy('timestamp', descending: true)
