@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:typed_data/src/typed_buffer.dart';
-import 'dart:typed_data';
+
 
 //import 'package:mqtt_client/mqtt_browser_client.dart';
 
@@ -33,8 +32,8 @@ class _TempState extends State<Light> {
   @override
   void initState() {
     super.initState();
-    loadLight();
     _initMqttClient();
+    loadLight();
   }
   void _updateIntensity(DragUpdateDetails details, double containerHeight) {
     setState(() {
@@ -57,26 +56,22 @@ class _TempState extends State<Light> {
 
 
   void _initMqttClient() async {
-    client = MqttServerClient.withPort('test.mosquitto.org', 'flutter_client', 1883);
-    client.useWebSocket = true; // If supported
-    client.websocketProtocols = MqttClientConstants.protocolsSingleDefault;
+    client = MqttServerClient.withPort('broker.hivemq.com', 'flutter_client', 1883);
+    client!.useWebSocket = true;
+    client!.logging(on: true);
+    client!.onConnected = onConnected;
+    client!.onDisconnected = onDisconnected;
 
-    client.logging(on: true); // Debug print
-    client.keepAlivePeriod = 20;
-    client.onDisconnected = onDisconnected;
-    client.onConnected = onConnected;
-    client.onSubscribed = onSubscribed;
-
-    final connMess = MqttConnectMessage()
+    final connMessage = MqttConnectMessage()
         .withClientIdentifier('flutter_client')
-        .startClean()
-        .withWillQos(MqttQos.atLeastOnce);
-    client.connectionMessage = connMess;
-
+        .withWillTopic('flutter/lastwill')
+        .withWillMessage('Disconnected')
+        .startClean();
+    client!.connectionMessage = connMessage;
     try {
       await client.connect();
     } catch (e) {
-      print('❌ MQTT connection failed: $e');
+      print('❌❌❌ MQTT connection failed: $e');
       client.disconnect();
     }
   }
@@ -440,10 +435,11 @@ class _TempState extends State<Light> {
 
                       if (client.connectionStatus?.state == MqttConnectionState.connected) {
                         client.publishMessage('light/schedule', MqttQos.atLeastOnce, builder.payload!);
+                        print("Schedule sent: $message");
                       } else {
                         print("MQTT is not connected. Can't publish.");
                       }
-                      print("Schedule sent: $message");
+
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: Colors.black,

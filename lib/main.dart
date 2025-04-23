@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-
+import 'globals.dart' as globals;
 import 'screens/home_page.dart';
 import 'screens/dashboard_page.dart';
 import 'screens/settings_page.dart';
@@ -50,16 +50,16 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
   late List<Widget> _pages;
 
     @override
   void initState() {
     super.initState();
-    // Initialize _pages in initState
+    // Initializing pages in initState
     _pages = [
+      HomePage(name: widget.username,onNavigate:_onItemTapped),
       DashboardPage(),
-      HomePage(name: widget.username),  // Passing username correctly
       SettingsPage(name: widget.username),
     ];
   }
@@ -71,18 +71,18 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedIndex],
+      body: _pages[_selectedIndex ],
       bottomNavigationBar: BottomNavigationBar(
         elevation: 20,
         type: BottomNavigationBarType.fixed, //background color
         backgroundColor:Colors.white,
-        currentIndex: _selectedIndex,
+        currentIndex: _selectedIndex ,
         onTap: _onItemTapped,
         selectedItemColor: Color(0xFF1A1F25),
-        unselectedItemColor: Colors.grey[700], // Lighter grey for unselected labels
+        unselectedItemColor: Colors.grey[700],
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Stats'),
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Stats'),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
         ],
       ),

@@ -191,7 +191,6 @@ class _SignInState extends State<SignIn> {
                     ),
                     ),
                 ),
-
                 SizedBox(height: 10,),
                  // Sign Up / Sign In Labels at the bottom
                 Row(

@@ -3,13 +3,15 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:mqtt_client/mqtt_server_client.dart';
+import '../globals.dart' as globals;
 import 'notifications.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 //import 'package:mqtt_client/mqtt_browser_client.dart';
 class HomePage extends StatefulWidget {
-   HomePage({super.key, required this.name});
+  final Function(int) onNavigate;
+   HomePage({super.key, required this.name,required this.onNavigate});
     String name;
 
   @override
@@ -62,7 +64,7 @@ class _HomePageState extends State<HomePage> {
 
   // Connect to the MQTT broker
   Future<void> connectToMQTT() async {
-    client = MqttServerClient.withPort('test.mosquitto.org', 'flutter_client', 1883);
+    client = MqttServerClient.withPort('broker.hivemq.com', 'flutter_client', 1883);
     client!.useWebSocket = true;
     client!.logging(on: true);
     client!.onConnected = onConnected;
@@ -78,7 +80,7 @@ class _HomePageState extends State<HomePage> {
       await client!.connect();
       print ("connection succeful");
     } catch (e) {
-      print('Error connecting to MQTT broker: $e');
+      print('Error :( connecting to MQTT broker: $e ');
     }
   }
   // Once connected, subscribe to the topic
@@ -218,9 +220,16 @@ class _HomePageState extends State<HomePage> {
                         child: Icon(Icons.notifications_none,size: 40,color: Color(0xFF19202A),)
                     ),
                     SizedBox(width: 10,),
-                    CircleAvatar(
-                      backgroundImage: AssetImage("assets/pic6.png"),
-                      radius: 25,
+                    GestureDetector(
+                      onTap: (){
+                        setState(() {
+                          widget.onNavigate(2);
+                        });
+                      },
+                      child: CircleAvatar(
+                        backgroundImage: AssetImage("assets/pic6.png"),
+                        radius: 25,
+                      ),
                     ),
                   ],
                 ),
@@ -564,7 +573,7 @@ class _HomePageState extends State<HomePage> {
                                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    "DHT22",
+                                    "DHT11",
                                     style: TextStyle(fontSize: 14, color: Colors.black54),
                                   ),
                                 ],
@@ -622,7 +631,7 @@ class _HomePageState extends State<HomePage> {
                                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                   ),
                                   Text(
-                                    "DHT22",
+                                    "DHT11",
                                     style: TextStyle(fontSize: 14, color: Colors.black54),
                                   ),
                                 ],

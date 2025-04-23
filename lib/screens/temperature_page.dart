@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:ihomey/mqtt_service.dart';
 class Temp extends StatefulWidget {
   const Temp({super.key});
 
@@ -14,9 +14,10 @@ class _TempState extends State<Temp> {
   //temp adjustment
   double _temperature = 30;
 
+  final MqttService mqttService = MqttService();
   //current data
-  int current_temp=14;
-  int current_humidity=50;
+  String currentTemp = "--";
+  String currentHumidity = "--";
 
   //schedule variables
   bool isOn= false;
@@ -106,7 +107,7 @@ class _TempState extends State<Temp> {
   Future<void> loadTempadj() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _temperature  = prefs.getDouble("tempadj") ?? 14; // default to "Abir" if no saved value
+      _temperature  = prefs.getDouble("tempadj") ?? 14;
     });
   }
   Future<void> saveTempadj(double newTemp) async {
@@ -116,7 +117,7 @@ class _TempState extends State<Temp> {
   Future<void> loadTemp() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      selectedTemp = prefs.getInt("temp") ?? 14; // default to "Abir" if no saved value
+      selectedTemp = prefs.getInt("temp") ?? 14;
     });
   }
   Future<void> saveTemp(int newTemp) async {
@@ -126,7 +127,7 @@ class _TempState extends State<Temp> {
   Future<void> loadStatus() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      isOn = prefs.getBool("status") ?? false; // default to "Abir" if no saved value
+      isOn = prefs.getBool("status") ?? false;
     });
   }
   Future<void> saveStatus(bool newStatus) async {
@@ -140,6 +141,13 @@ class _TempState extends State<Temp> {
     loadTempadj();
     loadTemp();
     loadStatus();
+    mqttService.onTempUpdate = (msg) {
+      setState(() => currentTemp = msg);
+    };
+    mqttService.onHumidityUpdate = (msg) {
+      setState(() => currentHumidity = msg);
+    };
+    mqttService.connect();
   }
 
   @override
@@ -235,17 +243,30 @@ class _TempState extends State<Temp> {
                       fontSize: 15,
                     ),
                   ),
-                  Container(
-                    alignment: Alignment.center,
-                    width: 145,height: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: Color(0xFF888990),
-                    ),
-                    child:Text(
-                      "$current_temp°C",
-                      style: TextStyle(
-                        fontSize: 30,
+                  GestureDetector(
+                    onTap: (){
+                      setState(() {
+                        mqttService.onTempUpdate = (msg) {
+                          setState(() => currentTemp = msg);
+                        };
+                        mqttService.onHumidityUpdate = (msg) {
+                          setState(() => currentHumidity = msg);
+                        };
+                        mqttService.connect();
+                      });
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: 145,height: 150,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Color(0xFFB4B5BA),
+                      ),
+                      child:Text(
+                        "$currentTemp°C",
+                        style: TextStyle(
+                          fontSize: 30,
+                        ),
                       ),
                     ),
                   )
@@ -265,10 +286,10 @@ class _TempState extends State<Temp> {
                     width: 145,height: 150,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Color(0xFF888990),
+                      color: Color(0xFFB4B5BA),
                     ),
                     child:Text(
-                      "$current_humidity%",
+                      "$currentHumidity%",
                       style: TextStyle(
                         fontSize: 30,
                       ),
