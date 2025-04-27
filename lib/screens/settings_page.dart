@@ -153,7 +153,6 @@ class _SettingsPageState extends State<SettingsPage> {
                                 ElevatedButton(
                                   onPressed: () async {
                                     String newUsername = controller.text.trim();
-
                                     // Optionally add a check to prevent empty usernames
                                     if (newUsername.isEmpty) {
                                       ScaffoldMessenger.of(
@@ -167,24 +166,37 @@ class _SettingsPageState extends State<SettingsPage> {
                                       );
                                       return;
                                     }
-
-                                    try {
-                                      await authservice.updateUsername(
-                                        newUsername,
-                                      ); // Call the function you shared
-                                      setState(() {
-                                        widget.name = newUsername;
-                                      });
+                                    if (await authservice.isUsernameUnique(
+                                      newUsername,
+                                    )) {
+                                      try {
+                                        await authservice.updateUsername(
+                                          newUsername,
+                                        ); // Call the function you shared
+                                        setState(() {
+                                          widget.name = newUsername;
+                                        });
+                                        Navigator.pop(context);
+                                      } catch (e) {
+                                        print("Failed to update username: $e");
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text(
+                                              'Failed to update username',
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    } else {
                                       Navigator.pop(context);
-                                    } catch (e) {
-                                      print("Failed to update username: $e");
                                       ScaffoldMessenger.of(
                                         context,
                                       ).showSnackBar(
                                         SnackBar(
-                                          content: Text(
-                                            'Failed to update username',
-                                          ),
+                                          content: Text('User name taken'),
+                                          backgroundColor: Colors.red,
                                         ),
                                       );
                                     }
@@ -317,9 +329,9 @@ class _SettingsPageState extends State<SettingsPage> {
                                         emailController.text.trim();
                                     String password =
                                         passwordController.text.trim();
-
                                     if (newEmail.isEmpty ||
                                         !newEmail.contains('@')) {
+                                      Navigator.pop(context);
                                       ScaffoldMessenger.of(
                                         context,
                                       ).showSnackBar(
@@ -327,12 +339,13 @@ class _SettingsPageState extends State<SettingsPage> {
                                           content: Text(
                                             'Please enter a valid email',
                                           ),
+                                          backgroundColor: Colors.red,
                                         ),
                                       );
                                       return;
                                     }
-
                                     if (password.isEmpty) {
+                                      Navigator.pop(context);
                                       ScaffoldMessenger.of(
                                         context,
                                       ).showSnackBar(
@@ -340,52 +353,67 @@ class _SettingsPageState extends State<SettingsPage> {
                                           content: Text(
                                             'Please enter your password',
                                           ),
+                                          backgroundColor: Colors.red,
                                         ),
                                       );
                                       return;
                                     }
-                                    String? username = await authservice.getUsernameFromEmail();
+                                    String? username =
+                                        await authservice
+                                            .getUsernameFromEmail();
                                     try {
                                       // Get the username (document ID) for the currently logged-in user
-
                                       if (username == null) {
+                                        Navigator.pop(context);
                                         ScaffoldMessenger.of(
                                           context,
                                         ).showSnackBar(
                                           SnackBar(
-                                            content: Text(
-                                              'Unable to retrieve username',
-                                            ),
+                                            content: Text('Wrong password'),
+                                            backgroundColor: Colors.red,
                                           ),
                                         );
                                         return;
                                       }
-
                                       // Call the updateEmail method with re-authentication
-                                      await authservice.updatetheEmail(
-                                        username,
-                                        newEmail,
-                                        password,
-                                      );
-
-                                      setState(() {
-                                        email =
-                                            newEmail; // Update the state variable with the new email (if needed)
-                                      });
-
-                                      Navigator.pop(context); // Close the modal
-                                    } catch (e) {
-                                      print("❤️ Failed to update email: $e");
+                                      if (!await authservice.isEmailTaken(newEmail)) {
+                                        await authservice.updatetheEmail(
+                                          username,
+                                          newEmail,
+                                          password,
+                                        );
+                                        setState(() {
+                                          email =
+                                              newEmail; // Update the state variable with the new email (if needed)
+                                        });
+                                        Navigator.pop(
+                                            context); // Close the modal
+                                      }else
+                                        {
+                                          Navigator.pop(
+                                              context);
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            SnackBar(
+                                              content: Text(
+                                                'email is already taken',
+                                              ),
+                                              backgroundColor: Colors.red,
+                                            ),
+                                          );
+                                        }
+                                      } catch (e) {
+                                      print("Failed to update email: $e");
+                                      Navigator.pop(context);
                                       ScaffoldMessenger.of(
                                         context,
                                       ).showSnackBar(
                                         SnackBar(
-                                          content: Text(
-                                            'Failed to update email: $username',
-                                          ),
+                                          content: Text('Wrong password'),
+                                          backgroundColor: Colors.red,
                                         ),
                                       );
-                                      Navigator.pop(context);
                                     }
                                   },
                                   child: Text('Save'),
@@ -585,9 +613,11 @@ class _SettingsPageState extends State<SettingsPage> {
 
             Center(
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  await authservice.singOut();
                   Navigator.pushReplacement(
                     context,
+
                     MaterialPageRoute(builder: (context) => SignIn()),
                   );
                 },
