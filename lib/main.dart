@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'globals.dart' as globals;
 import 'screens/home_page.dart';
 import 'screens/dashboard_page.dart';
 import 'screens/settings_page.dart';
@@ -9,9 +8,6 @@ import 'screens/intro_page.dart';
 import 'screens/temperature_page.dart';
 import 'screens/light_page.dart';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,18 +18,6 @@ void main() async{
 
   ));
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-
-  const bool useEmulators = false; // <- Set to false to use real Firebase
-
-  if (useEmulators) {
-    print("Using Firebase emulators...");
-    FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-    FirebaseFirestore.instance.useFirestoreEmulator('localhost', 8080);
-    //FirebaseStorage.instance.useEmulator('localhost', 9199);
-  } else {
-    print("Using live Firebase backend.");
-  }
-
   await Firebase.initializeApp();
   runApp( MyApp());
 }
@@ -52,6 +36,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: 'InriaSans',
       ),
+      //first page dissplayed
       home: IntroPage(),
     );
   }
@@ -69,15 +54,16 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
   late List<Widget> _pages;
 
-    @override
+  @override
   void initState() {
     super.initState();
-    // Initializing pages in initState
+    // Initializing pages
     _pages = [
-      HomePage(name: widget.username,onNavigate:_onItemTapped),
+      HomePage(name: widget.username, onNavigate: _onItemTapped),
       DashboardPage(),
       SettingsPage(name: widget.username),
     ];
+
   }
   void _onItemTapped(int index) {
     setState(() {

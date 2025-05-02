@@ -110,17 +110,17 @@ class _SignInState extends State<SignIn> {
                   ),
                 ),
                 Container(
-              margin: EdgeInsets.fromLTRB(30,30,10,20),
-              child: Text(
-                "Get comfy ! \nCustomizable Smart Home System",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 2,
-                  fontSize: 27,
-                  color: Color(0xFF112035),
+                  margin: EdgeInsets.fromLTRB(30,30,10,20),
+                  child: Text(
+                    "Get comfy ! \nCustomizable Smart Home System",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2,
+                      fontSize: 27,
+                      color: Color(0xFF112035),
+                    ),
+                  ),
                 ),
-              ),
-            ),
 
                 // Username field
                 _buildInputField(

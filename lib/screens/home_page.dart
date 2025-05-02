@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
@@ -24,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   String formattedDate='';
   double degree =0;
   bool isOn = false;
+
 
   MqttClient? client;
 
@@ -57,20 +59,60 @@ class _HomePageState extends State<HomePage> {
             .toList();
       });
     });
+    initNotifications();
   }
+  void initNotifications() {
+    AwesomeNotifications().initialize(
+      null,
+      [
+        NotificationChannel(
+          channelKey: 'motion_alerts',
+          channelName: 'Motion Alerts',
+          channelDescription: 'Alerts for detected unusual motion',
+          defaultColor: Colors.red,
+          ledColor: Colors.white,
+          playSound: true,
+          importance: NotificationImportance.High,
+          channelShowBadge: true,
+        ),
+      ],
+    );
 
-  List <String> weather_icons =["Icons.cloud_queue_rounded"];
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+  }
+  void showNotification(String msg) async {
+    await AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
+        channelKey: 'motion_alerts',
+        title: '🚨 Motion Alert!',
+        body: msg,
+        notificationLayout: NotificationLayout.Default,
+      ),
+    );
+  }
   List <notification> notifs=[];
-
-
   // Connect to the MQTT broker
   Future<void> connectToMQTT() async {
-    client = MqttServerClient.withPort('broker.hivemq.com', 'flutter_client', 1883);
-    client!.useWebSocket = true;
+    client = MqttServerClient.withPort('test.mosquitto.org', 'flutter_client', 1883);
     client!.logging(on: true);
     client!.onConnected = onConnected;
     client!.onDisconnected = onDisconnected;
+    client!.onSubscribed = (topic) => print('Subscribed to \$topic');
+    client!.updates?.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+      final recMess = c[0].payload as MqttPublishMessage;
+      final message =
+      MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+      final topic = c[0].topic;
 
+      if (topic == 'motion/alert') {
+        showNotification(message);
+      }
+    });
     final connMessage = MqttConnectMessage()
         .withClientIdentifier('flutter_client')
         .withWillTopic('flutter/lastwill')
@@ -84,23 +126,26 @@ class _HomePageState extends State<HomePage> {
       print('Error :( connecting to MQTT broker: $e ');
     }
   }
-  // Once connected, subscribe to the topic
   void onConnected() {
     print('Connected to the MQTT broker');
     client!.subscribe('light/control', MqttQos.atMostOnce);
+    client!.subscribe('motion/alert', MqttQos.atMostOnce);
   }
-  // When disconnected
   void onDisconnected() {
     print('Disconnected from the MQTT broker');
   }
+
   // Send ON or OFF to the topic
   void controlLED(String command) {
     if (client != null && client!.connectionStatus!.state == MqttConnectionState.connected) {
       final builder = MqttClientPayloadBuilder();
       builder.addString(command); // Add ON or OFF message
       client!.publishMessage('light/control', MqttQos.atMostOnce, builder.payload!);
+      print ("published : "+command);
     }
   }
+
+  //interface
   Widget NotifCard(notification n){
     return Container(
       padding: EdgeInsets.all(10),
@@ -417,7 +462,11 @@ class _HomePageState extends State<HomePage> {
                       GestureDetector(
                         onTap: (){
                           //navigate to light settings page
-                          Navigator.pushNamed(context, '/light');
+                          Navigator.pushNamed(context, '/light').then((_) {
+                            gettemp();
+                            //connecting to mqtt once the user get back to home page from advanced page
+                            connectToMQTT();
+                          });
                         },
                         child: Container(
                           width: 165,height: 81,
@@ -536,7 +585,11 @@ class _HomePageState extends State<HomePage> {
                   GestureDetector(
                     onTap: (){
                       print ("temperature : ");
-                      Navigator.pushNamed(context, '/temp');
+                      Navigator.pushNamed(context, '/temp').then((_) {
+                        gettemp();
+                        //connecting to mqtt once the user get back to home page from advanced page
+                        connectToMQTT();
+                      });
                     },
                     child: Container(
 
@@ -589,7 +642,11 @@ class _HomePageState extends State<HomePage> {
                   GestureDetector(
                     onTap: (){
                       print ("humidity : ");
-                      Navigator.pushNamed(context, '/temp');
+                      Navigator.pushNamed(context, '/temp').then((_) {
+                        gettemp();
+                        //connecting to mqtt once the user get back to home page from advanced page
+                        connectToMQTT();
+                      });
                     },
                     child: Container(
 
@@ -657,6 +714,3 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-extension on MqttClient {
-  set useWebSocket(bool useWebSocket) {}
-}

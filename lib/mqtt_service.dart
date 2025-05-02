@@ -2,11 +2,9 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
 class MqttService {
-  final client = MqttServerClient('broker.hivemq.com', 'FlutterClient');
-
+  final client = MqttServerClient('test.mosquitto.org', 'FlutterClient');
   Function(String)? onTempUpdate;
   Function(String)? onHumidityUpdate;
-
   Future<void> connect() async {
     client.port = 1883;
     client.keepAlivePeriod = 20;

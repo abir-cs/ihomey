@@ -247,8 +247,7 @@ class _TempState extends State<Temp> {
                     onTap: (){
                       setState(() {
                         mqttService.onTempUpdate = (msg) {
-                          setState(() => currentTemp = msg);
-                        };
+                          setState(() => currentTemp = msg);};
                         mqttService.onHumidityUpdate = (msg) {
                           setState(() => currentHumidity = msg);
                         };
