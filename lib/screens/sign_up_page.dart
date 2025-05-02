@@ -22,7 +22,7 @@ class _SignUpPageState extends State<SignUpPage> {
     });
   }
 
-    Widget _buildInputField({
+  Widget _buildInputField({
     required String label,
     required String hint,
     required TextEditingController controller,
@@ -63,7 +63,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 borderRadius: BorderRadius.circular(18),
                 borderSide: BorderSide.none,
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 16,
+              ),
             ),
           ),
         ),
@@ -84,7 +87,7 @@ class _SignUpPageState extends State<SignUpPage> {
               children: [
                 // Sign up Fields (similar to your Sign In fields)
                 // Username
-                              ClipRRect(
+                ClipRRect(
                   borderRadius: BorderRadius.circular(20),
                   child: Image.asset(
                     "assets/I-HOMEY (5).png",
@@ -93,7 +96,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                 ),
 
-                SizedBox(height: 30,),
+                SizedBox(height: 30),
 
                 // Username field
                 _buildInputField(
@@ -123,57 +126,72 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 // Navigation button
                 ElevatedButton(
-                  onPressed: () async{
+                  onPressed: () async {
                     String username = _usernameController.text.trim();
                     String email = _passkeyController.text.trim();
                     String password = _passwordController.text.trim();
                     //Call createAccount function
-                    final error = await authservice.createAccount(
-                    username: username,
-                    email: email,
-                    password: password,
-                    );
-
-                    if (error != null) {
-                    // Show error message if sign-up failed
-                    //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+                    if (email.isEmpty ||
+                        !email.contains('@')) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Please enter a valid email'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                    if (!await authservice.isUsernameUnique(username)) {
+                      // Show error message if sign-up failed
+                      //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Username is already taken'),
                           backgroundColor: Colors.red,
                         ),
                       );
+                    } else if (await authservice.isEmailTaken(email)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('email is already taken'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
                     } else {
-                    // Navigate back to Sign In page after successful account creation
-                    Navigator.pop(context);
+                      await authservice.createAccount(
+                        username: username,
+                        email: email,
+                        password: password,
+                      );
+                      Navigator.pop(context);
                     }
                   },
                   style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(Color(0xFF1B2635)),
-                  foregroundColor: WidgetStateProperty.all(Color(0xFFF4F4F4)),
-                  elevation: WidgetStateProperty.all(8),
-                  shadowColor: WidgetStateProperty.all(Colors.black.withOpacity(0.5)), 
-                      overlayColor: WidgetStateProperty.resolveWith<Color?>(
-                        (Set<WidgetState> states) {
-                          if (states.contains(WidgetState.pressed)) {
-                            return Color(0xFFF4F4F4).withOpacity(0.3); // Change ripple effect color
-                          }
-                          return null; // Default ripple color
-                        },
+                    backgroundColor: WidgetStateProperty.all(Color(0xFF1B2635)),
+                    foregroundColor: WidgetStateProperty.all(Color(0xFFF4F4F4)),
+                    elevation: WidgetStateProperty.all(8),
+                    shadowColor: WidgetStateProperty.all(
+                      Colors.black.withOpacity(0.5),
+                    ),
+                    overlayColor: WidgetStateProperty.resolveWith<Color?>((
+                      Set<WidgetState> states,
+                    ) {
+                      if (states.contains(WidgetState.pressed)) {
+                        return Color(
+                          0xFFF4F4F4,
+                        ).withOpacity(0.3); // Change ripple effect color
+                      }
+                      return null; // Default ripple color
+                    }),
+                    minimumSize: WidgetStateProperty.all(Size(150, 50)),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
+                          15,
+                        ), // Reduce roundness
                       ),
-                  minimumSize: WidgetStateProperty.all(Size(150, 50)),
-                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15), // Reduce roundness
                     ),
                   ),
-                ),
-                  child: Text(
-                    "Sign Up",
-                    style: TextStyle(
-                    fontSize: 18,
-                    ),
-                    ),
+                  child: Text("Sign Up", style: TextStyle(fontSize: 18)),
                 ),
                 const SizedBox(height: 30),
 
