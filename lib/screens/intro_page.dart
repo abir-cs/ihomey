@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'sign_in_page.dart';
+import 'package:ihomey/main.dart'; // Assuming this has your MainScreen
 
 class IntroPage extends StatelessWidget {
   const IntroPage({super.key});

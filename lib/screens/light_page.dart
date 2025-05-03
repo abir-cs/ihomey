@@ -48,15 +48,15 @@ class _TempState extends State<Light> {
 
     if (client.connectionStatus?.state == MqttConnectionState.connected) {
       client.publishMessage('light/opacity', MqttQos.atLeastOnce, builder.payload!);
+      print ("published :"+ opacityPercentage);
     } else {
       print("MQTT is not connected. Can't publish.");
     }
 
   }
 
-
   void _initMqttClient() async {
-    client = MqttServerClient.withPort('broker.hivemq.com', 'flutter_client', 1883);
+    client = MqttServerClient.withPort('test.mosquitto.org', 'flutter_client', 1883);
     client!.useWebSocket = true;
     client!.logging(on: true);
     client!.onConnected = onConnected;
@@ -70,29 +70,24 @@ class _TempState extends State<Light> {
     client!.connectionMessage = connMessage;
     try {
       await client.connect();
+      print("connection successful !");
     } catch (e) {
       print('❌❌❌ MQTT connection failed: $e');
       client.disconnect();
     }
   }
-  // Callback when connected to MQTT broker
+  //connected to MQTT broker
   void onConnected() {
     print('Connected to MQTT broker');
   }
-
-  // Callback when subscription is successful
+  //subscription is successful
   void onSubscribed(String topic) {
     print('Subscribed to $topic');
   }
   void onDisconnected() {
     print('Disconnected from the MQTT broker');
   }
-  // Send opacity value to MQTT broker
-  // void _publishOpacity(double opacity) {
-  //   final builder = MqttClientPayloadBuilder();
-  //   builder.addString(opacity.toString());  // Send opacity value as string
-  //   client.publishMessage('light/opacity', MqttQos.atLeastOnce, builder.payload);
-  // }
+
 
   bool isOn= false;
   bool lightOn=true;
