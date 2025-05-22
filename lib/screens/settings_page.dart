@@ -155,6 +155,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     String newUsername = controller.text.trim();
                                     // Optionally add a check to prevent empty usernames
                                     if (newUsername.isEmpty) {
+                                      Navigator.pop(context);
                                       ScaffoldMessenger.of(
                                         context,
                                       ).showSnackBar(
@@ -162,6 +163,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                           content: Text(
                                             'Username cannot be empty',
                                           ),
+                                          backgroundColor: Colors.red,
                                         ),
                                       );
                                       return;
@@ -172,7 +174,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                       try {
                                         await authservice.updateUsername(
                                           newUsername,
-                                        ); // Call the function you shared
+                                        );
                                         setState(() {
                                           widget.name = newUsername;
                                         });
@@ -186,6 +188,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                             content: Text(
                                               'Failed to update username',
                                             ),
+                                            backgroundColor: Colors.red,
                                           ),
                                         );
                                       }
@@ -362,29 +365,16 @@ class _SettingsPageState extends State<SettingsPage> {
                                         await authservice
                                             .getUsernameFromEmail();
                                     try {
-                                      // Get the username (document ID) for the currently logged-in user
-                                      if (username == null) {
-                                        Navigator.pop(context);
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          SnackBar(
-                                            content: Text('Wrong password'),
-                                            backgroundColor: Colors.red,
-                                          ),
-                                        );
-                                        return;
-                                      }
                                       // Call the updateEmail method with re-authentication
                                       if (!await authservice.isEmailTaken(newEmail)) {
                                         await authservice.updatetheEmail(
-                                          username,
+                                          username!,
                                           newEmail,
                                           password,
                                         );
                                         setState(() {
                                           email =
-                                              newEmail; // Update the state variable with the new email (if needed)
+                                              newEmail;
                                         });
                                         Navigator.pop(
                                             context); // Close the modal

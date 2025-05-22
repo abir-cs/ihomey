@@ -131,6 +131,19 @@ class _SignUpPageState extends State<SignUpPage> {
                     String email = _passkeyController.text.trim();
                     String password = _passwordController.text.trim();
                     //Call createAccount function
+                    if (username.isEmpty) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Username cannot be empty',
+                          ),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
                     if (email.isEmpty ||
                         !email.contains('@')) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -140,29 +153,41 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       );
                     }
-                    if (!await authservice.isUsernameUnique(username)) {
-                      // Show error message if sign-up failed
-                      //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Username is already taken'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    } else if (await authservice.isEmailTaken(email)) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('email is already taken'),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    } else {
-                      await authservice.createAccount(
-                        username: username,
-                        email: email,
-                        password: password,
-                      );
-                      Navigator.pop(context);
+                    else {
+                      if (!await authservice.isUsernameUnique(username)) {
+                        //ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(error)));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Username is already taken'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
+                      else if(password.length<6)
+                      {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('Password too short'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+
+                      }
+                      else if (await authservice.isEmailTaken(email)) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('email is already taken'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      } else {
+                        await authservice.createAccount(
+                          username: username,
+                          email: email,
+                          password: password,
+                        );
+                        Navigator.pop(context);
+                      }
                     }
                   },
                   style: ButtonStyle(

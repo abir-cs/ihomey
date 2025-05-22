@@ -76,15 +76,11 @@ class AuthService {
           .doc(newUsername) // new document ID
           .set({'email': user.email});
       // Delete the old document
-      try {
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(oldUsername)
-            .delete();
-        print(" Deleted successfully");
-      } catch (e) {
-        print(" Delete failed: $e");
-      }
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(oldUsername)
+          .delete();
+
       print("Username updated successfully!");
     } catch (e) {
       print("Error updating username: $e");
@@ -111,7 +107,7 @@ class AuthService {
     } on FirebaseAuthException catch (e) {
       print('error:${e.message}');
     } catch (e) {
-      print('An error occurred') ;
+      print('An error occurred');
     }
   }
 
@@ -145,10 +141,8 @@ class AuthService {
         password: password,
       );
       await user.reauthenticateWithCredential(credential);
-
       //Update email in Firebase Authentication
       await user.updateEmail(newEmail);
-
       await firestore.collection('users').doc(username).update({
         'email': newEmail,
       });
@@ -164,7 +158,6 @@ class AuthService {
       rethrow;
     }
   }
-
   Future<String?> getUsernameFromEmail() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
