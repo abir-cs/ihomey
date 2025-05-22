@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:mqtt_client/mqtt_server_client.dart';
-import '../globals.dart' as globals;
 import 'notifications.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -98,7 +97,7 @@ class _HomePageState extends State<HomePage> {
   List <notification> notifs=[];
   // Connect to the MQTT broker
   Future<void> connectToMQTT() async {
-    client = MqttServerClient.withPort('test.mosquitto.org', 'flutter_client', 1883);
+    client = MqttServerClient.withPort('192.168.1.34', 'flutter_client', 1883);
     client!.logging(on: true);
     client!.onConnected = onConnected;
     client!.onDisconnected = onDisconnected;
@@ -644,7 +643,7 @@ class _HomePageState extends State<HomePage> {
                       print ("humidity : ");
                       Navigator.pushNamed(context, '/temp').then((_) {
                         gettemp();
-                        //connecting to mqtt once the user get back to home page from advanced page
+                        //connecting to mqtt once the user get back to home page from temp page
                         connectToMQTT();
                       });
                     },

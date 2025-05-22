@@ -56,7 +56,7 @@ class _TempState extends State<Light> {
   }
 
   void _initMqttClient() async {
-    client = MqttServerClient.withPort('test.mosquitto.org', 'flutter_client', 1883);
+    client = MqttServerClient.withPort('192.168.1.34', 'flutter_client', 1883);
     client!.useWebSocket = true;
     client!.logging(on: true);
     client!.onConnected = onConnected;
