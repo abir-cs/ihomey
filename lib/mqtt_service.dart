@@ -2,7 +2,7 @@ import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
 class MqttService {
-  final client = MqttServerClient('192.168.1.34', 'FlutterClient');
+  final client = MqttServerClient('192.168.100.13', 'FlutterClient');
   Function(String)? onTempUpdate;
   Function(String)? onHumidityUpdate;
   Future<void> connect() async {

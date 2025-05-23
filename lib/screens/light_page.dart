@@ -56,7 +56,7 @@ class _TempState extends State<Light> {
   }
 
   void _initMqttClient() async {
-    client = MqttServerClient.withPort('192.168.1.34', 'flutter_client', 1883);
+    client = MqttServerClient.withPort('192.168.100.13', 'flutter_client', 1883);
     client!.useWebSocket = true;
     client!.logging(on: true);
     client!.onConnected = onConnected;
@@ -80,7 +80,6 @@ class _TempState extends State<Light> {
   void onConnected() {
     print('Connected to MQTT broker');
   }
-  //subscription is successful
   void onSubscribed(String topic) {
     print('Subscribed to $topic');
   }
@@ -424,6 +423,11 @@ class _TempState extends State<Light> {
                     onPressed: () {
                       String topic = "light/schedule";
                       String message = '{"from": "${selectedTime1.format(context)}", "to": "${selectedTime2.format(context)}"}';
+
+                      // if (lightOn)
+                      //   message = '{"from": "${selectedTime1.format(context)}", "to": "${selectedTime2.format(context)}", "state": "On" }';
+                      // else
+                      //   message = '{"from": "${selectedTime1.format(context)}", "to": "${selectedTime2.format(context)}", "state": "Off" }';
 
                       final builder = MqttClientPayloadBuilder();
                       builder.addString(message);

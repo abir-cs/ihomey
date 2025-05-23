@@ -97,18 +97,19 @@ class _HomePageState extends State<HomePage> {
   List <notification> notifs=[];
   // Connect to the MQTT broker
   Future<void> connectToMQTT() async {
-    client = MqttServerClient.withPort('192.168.1.34', 'flutter_client', 1883);
+    client = MqttServerClient.withPort('192.168.100.13', 'flutter_client', 1883);
     client!.logging(on: true);
     client!.onConnected = onConnected;
     client!.onDisconnected = onDisconnected;
     client!.onSubscribed = (topic) => print('Subscribed to \$topic');
     client!.updates?.listen((List<MqttReceivedMessage<MqttMessage>> c) {
       final recMess = c[0].payload as MqttPublishMessage;
-      final message =
-      MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
+      final message = MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
       final topic = c[0].topic;
 
-      if (topic == 'motion/alert') {
+      if (c[0].topic.toString()=='motion/alert')
+      {
+        print ("✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅");
         showNotification(message);
       }
     });
