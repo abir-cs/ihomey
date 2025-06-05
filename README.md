@@ -1,16 +1,9 @@
 # ihomey
 
-A new Flutter project.
+Flutter project.
 
-## Getting Started
+## goal
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+this project is a smart home flutter applaction program, which uses mqtt to connect with the hardware 
+by subscibing to topics and retrieving real time data and displaying it for user 
+or publishing commands under a topic according to user input 
